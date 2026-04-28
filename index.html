@@ -2,58 +2,80 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PromptHub Pro - 专属提示词库</title>
-    <meta name="description" content="AI提示词管理神器，智能标签推荐，多视图，统计，回收站，分享，密码保护。">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptHub Pro · 提示词库</title>
+    <meta name="description" content="AI提示词管理工具，支持云备份、深色模式、标签分类、统计">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
     <style>
         :root {
-            --bg: #fafaf9; --card-bg: #ffffff; --text: #1c1917; --text-secondary: #78716c; --text-tertiary: #a8a29e;
-            --border: #e7e5e4; --border-light: #f0efed; --accent: #6366f1; --accent-light: #eef2ff; --accent-hover: #4f46e5;
-            --tag-bg: #f5f5f4; --tag-text: #44403c; --tag-active-bg: #1c1917; --tag-active-text: #fafaf9;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04); --shadow-md: 0 4px 16px rgba(0,0,0,0.06); --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
-            --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px; --transition: 0.2s;
+            --bg: #fafaf9;
+            --card-bg: #ffffff;
+            --text: #1c1917;
+            --text-secondary: #78716c;
+            --border: #e7e5e4;
+            --accent: #6366f1;
+            --accent-light: #eef2ff;
+            --accent-hover: #4f46e5;
+            --tag-bg: #f5f5f4;
+            --tag-active-bg: #1c1917;
+            --tag-active-text: #fff;
+            --shadow: 0 2px 8px rgba(0,0,0,0.06);
+            --radius: 12px;
+            --transition: 0.2s;
         }
-        [data-accent="green"] { --accent: #10b981; --accent-light: #d1fae5; --accent-hover: #059669; }
-        [data-accent="orange"] { --accent: #f97316; --accent-light: #ffedd5; --accent-hover: #ea580c; }
-        [data-accent="pink"] { --accent: #ec4899; --accent-light: #fce7f3; --accent-hover: #db2777; }
         [data-theme="dark"] {
-            --bg: #1c1917; --card-bg: #292524; --text: #fafaf9; --text-secondary: #d6d3d1; --text-tertiary: #a8a29e;
-            --border: #44403c; --border-light: #3b3734; --tag-bg: #3b3734; --tag-text: #e7e5e4;
-            --tag-active-bg: #fafaf9; --tag-active-text: #1c1917;
+            --bg: #1c1917;
+            --card-bg: #292524;
+            --text: #fafaf9;
+            --text-secondary: #a8a29e;
+            --border: #44403c;
+            --accent: #818cf8;
+            --accent-light: #312e81;
+            --accent-hover: #6366f1;
+            --tag-bg: #3b3734;
+            --tag-active-bg: #fafaf9;
+            --tag-active-text: #1c1917;
+            --shadow: 0 2px 12px rgba(0,0,0,0.3);
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 999px; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); transition: var(--transition); }
-        .btn:hover { background: var(--accent-light); border-color: var(--accent); }
-        .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-        .btn-primary:hover { background: var(--accent-hover); }
-
-        /* 密码页 */
-        .lock-overlay { position: fixed; inset: 0; z-index: 1000; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
-        .lock-box { background: var(--card-bg); padding: 32px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); text-align: center; }
-        .lock-box input { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 999px; font-size: 1rem; text-align: center; margin: 16px 0; }
-        .app-container { display: none; }
-        .app-container.visible { display: block; }
-
-        .header { position: sticky; top: 0; z-index: 100; background: rgba(250,250,249,0.82); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-light); padding: 0 20px; }
-        [data-theme="dark"] .header { background: rgba(28,25,23,0.85); }
-        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 12px; }
-        .card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px; border: 1px solid var(--border-light); box-shadow: var(--shadow-sm); }
-        .prompts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1c1917; color: #fff; padding: 10px 24px; border-radius: 999px; z-index: 400; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:var(--bg); color:var(--text); transition: background 0.3s; min-height:100vh; }
+        button, select, input { font-family: inherit; }
+        .btn {
+            display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:99px; font-size:0.85rem;
+            border:1px solid var(--border); background:var(--card-bg); color:var(--text); cursor:pointer; transition:var(--transition);
+        }
+        .btn:hover { background:var(--accent-light); border-color:var(--accent); }
+        .btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+        .btn-primary:hover { background:var(--accent-hover); }
+        .lock-overlay { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:1000; flex-direction:column; gap:20px; }
+        .lock-overlay.hidden { display:none; }
+        .app-container { display:none; }
+        .app-container.visible { display:block; }
+        .header { position:sticky; top:0; z-index:100; background:rgba(250,250,249,0.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:0 20px; }
+        [data-theme="dark"] .header { background:rgba(28,25,23,0.85); }
+        .header-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
+        .card {
+            background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:16px;
+            box-shadow:var(--shadow); transition:var(--transition); margin-bottom:12px;
+        }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:16px; }
+        .modal {
+            position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:200; display:flex;
+            align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.2s;
+        }
+        .modal.active { opacity:1; pointer-events:auto; }
+        .modal-box { background:var(--card-bg); padding:24px; border-radius:var(--radius); width:90%; max-width:500px; max-height:80vh; overflow-y:auto; }
+        .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1c1917; color:#fff; padding:10px 24px; border-radius:99px; z-index:500; }
     </style>
 </head>
 <body>
     <!-- 密码锁 -->
     <div class="lock-overlay" id="lockOverlay">
-        <div class="lock-box">
-            <div style="font-size: 2rem;">🔐</div>
-            <div style="font-weight: 600;">请输入密码</div>
-            <input type="password" id="lockPassword" placeholder="密码" autocomplete="off">
-            <div id="lockError" style="color: #dc2626; font-size: 0.85rem; min-height: 20px;"></div>
-            <button class="btn btn-primary" id="lockSubmit" style="width: 100%;">解锁</button>
-            <button class="btn" id="changePasswordBtn" style="margin-top: 8px; width: 100%;">修改密码</button>
+        <div class="card" style="text-align:center;">
+            <div style="font-size:2rem;">🔐</div>
+            <input type="password" id="lockPassword" placeholder="密码" style="width:100%; padding:10px; margin:12px 0; border-radius:99px; border:1px solid var(--border); text-align:center;">
+            <div id="lockError" style="color:#dc2626; font-size:0.8rem;"></div>
+            <button class="btn btn-primary" id="lockSubmit">解锁</button>
         </div>
     </div>
 
@@ -61,226 +83,283 @@
     <div class="app-container" id="appContainer">
         <header class="header">
             <div class="header-inner">
-                <span style="font-weight:700; display:flex; align-items:center; gap:8px;"><span style="background:var(--accent); color:#fff; padding:4px 12px; border-radius:8px;">P</span>PromptHub Pro</span>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <span style="font-weight:700; display:flex; align-items:center; gap:8px;">
+                    <span style="background:var(--accent); color:#fff; padding:2px 12px; border-radius:8px;">P</span> PromptHub
+                </span>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <button class="btn" id="themeToggle">🌙</button>
-                    <select id="colorSelect" style="padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--card-bg);">
-                        <option value="blue">蓝</option><option value="green">绿</option><option value="orange">橙</option><option value="pink">粉</option>
-                    </select>
-                    <button class="btn" id="btnStats">📊统计</button>
-                    <button class="btn" id="btnRandom">🎲随机</button>
-                    <button class="btn" id="btnExport">导出</button>
-                    <button class="btn" id="btnImport">导入</button>
-                    <button class="btn" id="btnTrash">🗑️回收站</button>
+                    <button class="btn" id="btnSettings">⚙️</button>
+                    <button class="btn" id="btnBackup" title="备份到GitHub">☁️ 备份</button>
+                    <button class="btn" id="btnRestore" title="从GitHub恢复">⬇️ 恢复</button>
+                    <button class="btn" id="btnTrash">🗑️ 回收站</button>
                     <button class="btn btn-primary" id="btnAddPrompt">＋新建</button>
                 </div>
             </div>
         </header>
+
         <main style="max-width:1200px; margin:0 auto; padding:20px;">
             <div style="display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
-                <input type="text" id="searchInput" placeholder="搜索提示词..." style="flex:1; padding:10px 16px; border-radius:999px; border:1px solid var(--border); background:var(--card-bg);">
-                <select id="sortSelect" style="padding:8px 12px; border-radius:999px; border:1px solid var(--border); background:var(--card-bg);">
-                    <option value="updated">最近更新</option><option value="copyCount">复制最多</option><option value="title">标题 A-Z</option>
+                <input type="text" id="searchInput" placeholder="搜索提示词..." style="flex:1; padding:10px 16px; border-radius:99px; border:1px solid var(--border); background:var(--card-bg);">
+                <select id="sortSelect" style="padding:8px 12px; border-radius:99px; border:1px solid var(--border); background:var(--card-bg);">
+                    <option value="updated">最近更新</option>
+                    <option value="copyCount">复制最多</option>
+                    <option value="title">标题 A-Z</option>
                 </select>
             </div>
             <div id="tagFilters" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
-            <div id="promptsContainer"></div>
+            <div id="promptsContainer" class="grid"></div>
         </main>
     </div>
 
-    <div id="toastContainer" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:400;"></div>
+    <!-- 设置面板 -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-box">
+            <h3 style="margin-bottom:16px;">⚙️ GitHub 备份设置</h3>
+            <label>Token <input type="password" id="githubToken" placeholder="ghp_xxxx" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); margin:4px 0;"></label>
+            <label>Owner <input type="text" id="githubOwner" placeholder="niwueryu" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); margin:4px 0;"></label>
+            <label>Repo <input type="text" id="githubRepo" placeholder="prompthub" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); margin:4px 0;"></label>
+            <label>Branch <input type="text" id="githubBranch" placeholder="main" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); margin:4px 0;"></label>
+            <label>路径 <input type="text" id="githubPath" placeholder="backups" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); margin:4px 0;"></label>
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:16px;">
+                <button class="btn" id="closeSettings">取消</button>
+                <button class="btn btn-primary" id="saveSettings">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:500;"></div>
 
     <script>
         (function() {
-            // 密码逻辑
-            const DEFAULT_PASSWORD = '1234';
-            let currentPassword = localStorage.getItem('app_password_pro') || DEFAULT_PASSWORD;
+            // 密码
+            const PASSWORD = localStorage.getItem('app_password') || '1234';
             const lockOverlay = document.getElementById('lockOverlay');
             const appContainer = document.getElementById('appContainer');
-            const lockPassword = document.getElementById('lockPassword');
-            const lockError = document.getElementById('lockError');
-
-            function showApp() {
-                lockOverlay.style.display = 'none';
-                appContainer.classList.add('visible');
-            }
-            function lockApp() {
-                lockOverlay.style.display = 'flex';
-                appContainer.classList.remove('visible');
-            }
-            if (localStorage.getItem('unlocked_pro') === 'true') showApp();
-            else lockApp();
-
             document.getElementById('lockSubmit').addEventListener('click', () => {
-                if (lockPassword.value === currentPassword) {
-                    localStorage.setItem('unlocked_pro', 'true');
-                    showApp();
-                    lockError.textContent = '';
+                if (document.getElementById('lockPassword').value === PASSWORD) {
+                    lockOverlay.classList.add('hidden');
+                    appContainer.classList.add('visible');
+                    localStorage.setItem('unlocked', 'true');
                 } else {
-                    lockError.textContent = '密码错误';
-                    lockPassword.value = '';
+                    document.getElementById('lockError').textContent = '密码错误';
                 }
             });
-            document.getElementById('changePasswordBtn').addEventListener('click', () => {
-                const newPwd = prompt('请输入新密码（留空取消）');
-                if (newPwd) {
-                    currentPassword = newPwd;
-                    localStorage.setItem('app_password_pro', newPwd);
-                    alert('密码已更新');
-                }
-            });
+            if (localStorage.getItem('unlocked') === 'true') { lockOverlay.classList.add('hidden'); appContainer.classList.add('visible'); }
 
-            // 数据核心
-            const STORAGE_KEY = 'prompthub_pro_data', TRASH_KEY = 'prompthub_pro_trash';
-            let prompts = [], trash = [], currentView = 'main', editingId = null, modalTags = [];
-            let selectedTags = new Set(), sortBy = 'updated';
-            const defaultPrompts = [
-                { id:'p1', title:'专业写作助手', desc:'撰写深度文章', content:'作为资深编辑，写一篇800字文章，主题：', tags:['写作','内容'], note:'', copyCount:5, createdAt:'2025-01-01', updatedAt:'2025-01-10' },
-                { id:'p2', title:'代码审查专家', desc:'代码质量检查', content:'审查以下代码：\n```\n\n```', tags:['编程','技术'], note:'', copyCount:12, createdAt:'2025-02-01', updatedAt:'2025-03-01' },
-                { id:'p3', title:'翻译润色', desc:'中英双语', content:'翻译并润色：', tags:['翻译','语言'], note:'', copyCount:3, createdAt:'2025-03-01', updatedAt:'2025-04-01' }
-            ];
+            // 数据
+            const STORAGE_KEY = 'prompthub_data';
+            const TRASH_KEY = 'prompthub_trash';
+            let prompts = [], trash = [];
+            let currentView = 'main';
+            let sortBy = 'updated';
+            let selectedTags = new Set();
 
             function load() {
-                try { prompts = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultPrompts; } catch(e) { prompts = defaultPrompts; }
-                try { trash = JSON.parse(localStorage.getItem(TRASH_KEY)) || []; } catch(e) { trash = []; }
+                try { prompts = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultPrompts(); } catch { prompts = defaultPrompts(); }
+                try { trash = JSON.parse(localStorage.getItem(TRASH_KEY)) || []; } catch { trash = []; }
             }
             function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts)); }
             function saveTrash() { localStorage.setItem(TRASH_KEY, JSON.stringify(trash)); }
-            function toast(msg) {
-                const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
-                document.getElementById('toastContainer').appendChild(t);
-                setTimeout(()=> t.remove(), 2000);
+            function defaultPrompts() {
+                return [
+                    { id:'p1', title:'专业写作助手', desc:'', content:'作为资深编辑，写一篇800字文章。主题：', tags:['写作'], note:'', copyCount:0, createdAt:'2025-01-01', updatedAt:'2025-01-01' },
+                    { id:'p2', title:'代码审查', desc:'', content:'审查以下代码：\n```\n\n```', tags:['编程'], note:'', copyCount:0, createdAt:'2025-01-02', updatedAt:'2025-01-02' }
+                ];
             }
 
-            function renderAll() {
-                renderTags();
-                renderPrompts();
+            function toast(msg) {
+                const t = document.createElement('div'); t.className='toast'; t.textContent = msg;
+                document.getElementById('toastContainer').appendChild(t);
+                setTimeout(() => t.remove(), 2000);
             }
+
+            // 渲染
             function getFiltered() {
-                const q = document.getElementById('searchInput').value.toLowerCase();
-                let list = currentView==='trash' ? trash : prompts;
-                if (selectedTags.size) list = list.filter(p=> p.tags.some(t=> selectedTags.has(t)));
-                if (q) list = list.filter(p=> p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q));
-                list.sort((a,b)=> {
-                    if (sortBy==='title') return a.title.localeCompare(b.title);
-                    if (sortBy==='copyCount') return b.copyCount - a.copyCount;
-                    return new Date(b.updatedAt) - new Date(a.updatedAt);
-                });
+                let list = currentView === 'trash' ? trash : prompts;
+                const q = document.getElementById('searchInput').value.trim().toLowerCase();
+                if (selectedTags.size) list = list.filter(p => p.tags.some(t => selectedTags.has(t)));
+                if (q) list = list.filter(p => p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q));
+                if (sortBy === 'title') list.sort((a,b) => a.title.localeCompare(b.title));
+                else if (sortBy === 'copyCount') list.sort((a,b) => b.copyCount - a.copyCount);
+                else list.sort((a,b) => new Date(b.updatedAt) - new Date(a.updatedAt));
                 return list;
             }
             function renderTags() {
                 const map = {};
                 let total = 0;
-                (currentView==='trash'?trash:prompts).forEach(p=> { total++; p.tags.forEach(t=> { const tag=t.trim(); if(tag) map[tag]=(map[tag]||0)+1; }); });
-                let html = `<span class="btn ${selectedTags.size===0?'btn-primary':''}" onclick="window._clearTags()">全部(${total})</span>`;
-                Object.entries(map).sort((a,b)=>b[1]-a[1]).forEach(([tag,cnt])=> {
-                    html += `<span class="btn ${selectedTags.has(tag)?'btn-primary':''}" onclick="window._toggleTag('${tag}')">${tag}(${cnt})</span>`;
+                (currentView==='trash'?trash:prompts).forEach(p => { total++; p.tags.forEach(t => { const tag=t.trim(); if(tag) map[tag]=(map[tag]||0)+1; }); });
+                let html = `<span class="btn ${selectedTags.size===0?'btn-primary':''}" onclick="window._clearTags()">全部 (${total})</span>`;
+                Object.entries(map).sort((a,b)=>b[1]-a[1]).forEach(([tag,cnt]) => {
+                    html += `<span class="btn ${selectedTags.has(tag)?'btn-primary':''}" onclick="window._toggleTag('${tag}')">${tag} (${cnt})</span>`;
                 });
                 document.getElementById('tagFilters').innerHTML = html;
             }
-            window._clearTags = ()=>{ selectedTags.clear(); renderAll(); };
-            window._toggleTag = (tag)=> {
+            window._clearTags = () => { selectedTags.clear(); renderAll(); };
+            window._toggleTag = (tag) => {
                 if (selectedTags.has(tag)) selectedTags.delete(tag); else selectedTags.add(tag);
                 renderAll();
             };
-
-            function renderPrompts() {
+            function renderAll() {
                 const list = getFiltered();
                 document.getElementById('promptsContainer').innerHTML = list.length ? '' : '<div class="card" style="text-align:center; padding:40px;">📭 暂无提示词</div>';
-                document.getElementById('promptsContainer').innerHTML += list.map(p=> `
-                    <div class="card" style="margin-bottom:12px;">
-                        <div style="display:flex; justify-content:space-between;">
+                document.getElementById('promptsContainer').innerHTML += list.map(p => `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                             <strong>${p.title}</strong>
-                            <span style="font-size:0.8rem; color:var(--text-secondary);">复制 ${p.copyCount||0} 次</span>
+                            <span style="font-size:0.8rem; color:var(--text-secondary);">复制 ${p.copyCount||0}</span>
                         </div>
-                        ${p.desc?`<div style="font-size:0.85rem; color:var(--text-secondary); margin:4px 0;">${p.desc}</div>`:''}
-                        <div style="background:var(--bg); padding:10px; border-radius:8px; font-family:monospace; margin:8px 0;">${p.content}</div>
-                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            ${p.tags.map(t=>`<span class="btn" style="padding:2px 8px; font-size:0.7rem;" onclick="window._toggleTag('${t}')">${t}</span>`).join('')}
+                        ${p.desc ? `<div style="font-size:0.85rem; color:var(--text-secondary); margin:4px 0;">${p.desc}</div>` : ''}
+                        <div style="background:var(--bg); padding:8px; border-radius:8px; font-family:monospace; margin:8px 0;">${p.content}</div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+                            ${p.tags.map(t => `<span class="btn" style="padding:2px 8px; font-size:0.7rem;" onclick="window._toggleTag('${t}')">${t}</span>`).join('')}
                         </div>
                         <div style="display:flex; gap:6px; margin-top:8px;">
                             <button class="btn" onclick="window._copyPrompt('${p.id}')">📋复制</button>
                             <button class="btn" onclick="window._editPrompt('${p.id}')">✏️编辑</button>
-                            <button class="btn" onclick="window._sharePrompt('${p.id}')">🔗分享</button>
                             <button class="btn" onclick="window._deletePrompt('${p.id}')">🗑️删除</button>
                         </div>
                     </div>
                 `).join('');
             }
-            window._copyPrompt = (id)=> {
+            window._copyPrompt = (id) => {
                 const p = (currentView==='trash'?trash:prompts).find(x=>x.id===id);
                 if(p) { navigator.clipboard.writeText(p.content); p.copyCount = (p.copyCount||0)+1; save(); renderAll(); toast('已复制'); }
             };
-            window._editPrompt = (id)=> {
-                const p = prompts.find(x=>x.id===id);
-                if(p) { const t=prompt('编辑标题',p.title); if(t){ p.title=t; save(); renderAll(); } }
-            };
-            window._sharePrompt = (id)=> {
+            window._editPrompt = (id) => {
                 const p = prompts.find(x=>x.id===id);
                 if(p) {
-                    const url = location.origin + location.pathname + '#share=' + encodeURIComponent(JSON.stringify({title:p.title,content:p.content}));
-                    navigator.clipboard.writeText(url); toast('链接已复制');
+                    const newTitle = prompt('编辑标题', p.title);
+                    if(newTitle) { p.title = newTitle; save(); renderAll(); }
                 }
             };
-            window._deletePrompt = (id)=> {
+            window._deletePrompt = (id) => {
                 const idx = prompts.findIndex(x=>x.id===id);
-                if(idx>=0 && confirm('移到回收站？')) { trash.push(prompts.splice(idx,1)[0]); save(); saveTrash(); renderAll(); }
+                if(idx >= 0 && confirm('移到回收站？')) {
+                    trash.push(prompts.splice(idx,1)[0]);
+                    save(); saveTrash(); renderAll();
+                }
             };
 
-            // 随机、统计、回收站按钮
-            document.getElementById('btnRandom').addEventListener('click', ()=>{
-                if(prompts.length) { const p=prompts[Math.floor(Math.random()*prompts.length)]; document.getElementById('searchInput').value=''; selectedTags.clear(); renderAll(); toast('随机：'+p.title); }
-            });
-            document.getElementById('btnStats').addEventListener('click', ()=>{
-                alert(`总数: ${prompts.length}，回收站: ${trash.length}，本月新增: ${prompts.filter(p=>new Date(p.createdAt).getMonth()===new Date().getMonth()).length}`);
-            });
-            document.getElementById('btnTrash').addEventListener('click', ()=>{
-                if(currentView==='trash') { currentView='main'; document.getElementById('btnTrash').textContent='🗑️回收站'; }
-                else { currentView='trash'; document.getElementById('btnTrash').textContent='📋返回'; }
-                selectedTags.clear(); renderAll();
-            });
-
-            // 导出/导入
-            document.getElementById('btnExport').addEventListener('click', ()=>{
-                const data = JSON.stringify(prompts.concat(trash), null, 2);
-                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data])); a.download = 'prompthub_backup.json'; a.click(); toast('备份已下载');
-            });
-            document.getElementById('btnImport').addEventListener('click', ()=>{
-                const input = document.createElement('input'); input.type='file'; input.accept='.json';
-                input.onchange = (e)=>{
-                    const file = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (ev)=>{ try {
-                        const data = JSON.parse(ev.target.result);
-                        if(confirm('导入将覆盖当前数据？')) { prompts = data.filter(x=>x.id); save(); renderAll(); toast('导入完成'); }
-                    } catch(ex) { toast('格式错误'); } };
-                    reader.readAsText(file);
-                };
-                input.click();
-            });
-
-            // 主题/颜色
-            document.getElementById('themeToggle').addEventListener('click', ()=>{
-                const cur = document.documentElement.getAttribute('data-theme');
-                document.documentElement.setAttribute('data-theme', cur==='dark'?'light':'dark');
-                localStorage.setItem('theme', cur==='dark'?'light':'dark');
-                document.getElementById('themeToggle').textContent = cur==='dark'?'🌙':'☀️';
-            });
-            document.getElementById('colorSelect').addEventListener('change', (e)=>{
-                document.documentElement.setAttribute('data-accent', e.target.value);
-            });
-            document.getElementById('sortSelect').addEventListener('change', (e)=>{ sortBy=e.target.value; renderAll(); });
-            document.getElementById('searchInput').addEventListener('input', renderAll);
-            document.getElementById('btnAddPrompt').addEventListener('click', ()=>{
+            // 按钮事件
+            document.getElementById('btnAddPrompt').addEventListener('click', () => {
                 const title = prompt('标题'); if(!title) return;
                 const content = prompt('内容'); if(!content) return;
-                prompts.unshift({ id:'p'+Date.now(), title, desc:'', content, tags:[], note:'', copyCount:0, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString() });
-                save(); renderAll(); toast('已创建');
+                const tags = prompt('标签（逗号分隔）','')?.split(',').map(t=>t.trim()).filter(Boolean) || [];
+                prompts.unshift({ id:'p'+Date.now(), title, desc:'', content, tags, note:'', copyCount:0, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString() });
+                save(); renderAll();
             });
+            document.getElementById('btnTrash').addEventListener('click', () => {
+                currentView = currentView==='trash' ? 'main' : 'trash';
+                document.getElementById('btnTrash').textContent = currentView==='trash' ? '📋 返回' : '🗑️ 回收站';
+                selectedTags.clear(); renderAll();
+            });
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                const cur = document.documentElement.getAttribute('data-theme');
+                const next = cur==='dark'?'light':'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                document.getElementById('themeToggle').textContent = next==='dark'?'☀️':'🌙';
+            });
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('themeToggle').textContent = '☀️';
+            }
+
+            document.getElementById('sortSelect').addEventListener('change', (e) => { sortBy = e.target.value; renderAll(); });
+            document.getElementById('searchInput').addEventListener('input', renderAll);
+
+            // GitHub 备份
+            const settingsModal = document.getElementById('settingsModal');
+            document.getElementById('btnSettings').addEventListener('click', () => {
+                document.getElementById('githubToken').value = localStorage.getItem('github_token') || '';
+                document.getElementById('githubOwner').value = localStorage.getItem('github_owner') || 'niwueryu';
+                document.getElementById('githubRepo').value = localStorage.getItem('github_repo') || 'prompthub';
+                document.getElementById('githubBranch').value = localStorage.getItem('github_branch') || 'main';
+                document.getElementById('githubPath').value = localStorage.getItem('github_path') || 'backups';
+                settingsModal.classList.add('active');
+            });
+            document.getElementById('closeSettings').addEventListener('click', () => settingsModal.classList.remove('active'));
+            document.getElementById('saveSettings').addEventListener('click', () => {
+                localStorage.setItem('github_token', document.getElementById('githubToken').value);
+                localStorage.setItem('github_owner', document.getElementById('githubOwner').value);
+                localStorage.setItem('github_repo', document.getElementById('githubRepo').value);
+                localStorage.setItem('github_branch', document.getElementById('githubBranch').value);
+                localStorage.setItem('github_path', document.getElementById('githubPath').value);
+                settingsModal.classList.remove('active');
+                toast('设置已保存');
+            });
+
+            async function backupToGitHub() {
+                const token = localStorage.getItem('github_token');
+                const owner = localStorage.getItem('github_owner') || 'niwueryu';
+                const repo = localStorage.getItem('github_repo') || 'prompthub';
+                const branch = localStorage.getItem('github_branch') || 'main';
+                const path = (localStorage.getItem('github_path') || 'backups').replace(/\/$/, '');
+                if(!token) return toast('请先在设置中填写 GitHub Token');
+
+                const data = JSON.stringify(prompts, null, 2);
+                const filename = `prompthub_${new Date().toISOString().slice(0,10)}_${Date.now()}.json`;
+                const filepath = `${path}/${filename}`;
+
+                const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filepath}`;
+                const body = JSON.stringify({
+                    message: `backup: ${filename}`,
+                    content: btoa(unescape(encodeURIComponent(data))),
+                    branch: branch
+                });
+
+                try {
+                    const res = await fetch(url, {
+                        method: 'PUT',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body
+                    });
+                    if(res.ok) toast('✅ 备份成功');
+                    else {
+                        const err = await res.json();
+                        toast('❌ 备份失败: ' + (err.message || '权限不足'));
+                    }
+                } catch(e) {
+                    toast('网络错误，备份失败');
+                }
+            }
+
+            async function restoreFromGitHub() {
+                const token = localStorage.getItem('github_token');
+                const owner = localStorage.getItem('github_owner') || 'niwueryu';
+                const repo = localStorage.getItem('github_repo') || 'prompthub';
+                const path = (localStorage.getItem('github_path') || 'backups').replace(/\/$/, '');
+                if(!token) return toast('请先在设置中填写 GitHub Token');
+
+                const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                try {
+                    const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
+                    if(!res.ok) throw new Error('无法获取备份列表');
+                    const files = await res.json();
+                    const list = Array.isArray(files) ? files.filter(f => f.name.endsWith('.json')) : [];
+                    if(!list.length) return toast('云端暂无备份');
+                    const selected = prompt('选择备份文件（输入编号）：\n' + list.map((f,i) => `${i+1}. ${f.name}`).join('\n'));
+                    if(!selected) return;
+                    const idx = parseInt(selected)-1;
+                    if(idx < 0 || idx >= list.length) return toast('无效选择');
+                    const downloadUrl = list[idx].download_url;
+                    const data = await fetch(downloadUrl).then(r => r.json());
+                    if(confirm('恢复将替换当前所有提示词，确定？')) {
+                        prompts = data;
+                        save();
+                        renderAll();
+                        toast('✅ 恢复成功');
+                    }
+                } catch(e) {
+                    toast('恢复失败: ' + e.message);
+                }
+            }
+
+            document.getElementById('btnBackup').addEventListener('click', backupToGitHub);
+            document.getElementById('btnRestore').addEventListener('click', restoreFromGitHub);
 
             // 初始化
             load();
-            if (localStorage.getItem('unlocked_pro') === 'true') showApp();
             renderAll();
         })();
     </script>
